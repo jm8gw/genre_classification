@@ -5,7 +5,11 @@ from omegaconf import DictConfig, OmegaConf
 
 
 # This automatically reads in the configuration
-@hydra.main(config_name='config')
+@hydra.main(
+    version_base=None,
+    config_path="conf",
+    config_name="config",
+)
 def go(config: DictConfig):
 
     # Setup the wandb experiment. All runs will be grouped under this name
@@ -15,12 +19,15 @@ def go(config: DictConfig):
     # You can get the path at the root of the MLflow project with this:
     root_path = hydra.utils.get_original_cwd()
 
+    # print("Loaded config:", config)
+    # print("Config main:", config.get("main"))
+
     # Check which steps we need to execute
     if isinstance(config["main"]["execute_steps"], str):
         # This was passed on the command line as a comma-separated list of steps
         steps_to_execute = config["main"]["execute_steps"].split(",")
     else:
-        assert isinstance(config["main"]["execute_steps"], list)
+        # assert isinstance(config["main"]["execute_steps"], list)
         steps_to_execute = config["main"]["execute_steps"]
 
     # Download step
